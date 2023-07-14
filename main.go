@@ -2,51 +2,21 @@ package main
 
 import (
 	"log"
-	"sort"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func main() {
-	AAA([]int{5, 6}, 6)
-}
-
-type sortArr []int
-
-func (s sortArr) Len() int {
-	return len(s)
-}
-
-func (s sortArr) Less(i, j int) bool {
-	return s[i] < s[j]
-}
-
-func (s sortArr) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
-}
-
-func AAA(arr []int, k int) {
-	var result []int
-	sort.Sort(sortArr(arr))
-
-	temp := 0
-	index := 1
-	for temp < k {
-		ve := -1
-		for _, v := range arr {
-			if v == index {
-				ve = v
-				break
-			}
-		}
-		if ve == -1 {
-			result = append(result, index)
-			temp++
-
-		}
-		index++
+	db, err := gorm.Open(mysql.Open("root:root@tcp(127.0.0.1:3306)/jt_dev?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{})
+	if err != nil {
+		log.Println("err:", err)
 	}
-	sum := 0
-	for _, v := range result {
-		sum += v
+	var a int64
+	err = db.Count(&a).Error
+	if err != nil {
+		log.Println("err:", err)
 	}
-	log.Println(sum)
+	log.Println("count:",a)
+
 }
